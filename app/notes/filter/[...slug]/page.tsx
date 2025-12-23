@@ -11,10 +11,44 @@ import {
 import NotesClient from "./Notes.client";
 import { fetchNotes } from "@/lib/api";
 
+import { Metadata } from "next";
+
 type Props = {
   params: Promise<{ slug: string[] }>;
   searchParams: Promise<{ page?: string }>;
 };
+
+// Реалізація функції generateMetadata згідно з ТЗ
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+
+  // аналог как в основной функции
+  const actualValue = slug[0] === "filter" ? slug[1] : slug[0];
+  const filterName =
+    actualValue === "all" || !actualValue ? "All Notes" : actualValue;
+
+  const title = `Notes: ${filterName} | NoteHub`;
+  const description = `Browse and manage your ${filterName.toLowerCase()} notes efficiently on NoteHub.`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: `https://notehub.com/notes/filter/${actualValue || "all"}`,
+      images: [
+        {
+          url: "https://ac.goit.global/fullstack/react/notehub-og-meta.jpg",
+          width: 1200,
+          height: 630,
+          alt: `Notes filtered by ${filterName}`,
+        },
+      ],
+      type: "website",
+    },
+  };
+}
 
 export default async function NotesByCategory({ params }: Props) {
   const { slug } = await params;
