@@ -25,7 +25,7 @@ export const metadata: Metadata = {
 export default function CreateNotePage() {
   return <CreateNoteClient />;
 }
-// Візьми весь код із файлу CreateNoteClient.tsx і відобрази його на цій сторінці ».
+// "Візьми весь код із файлу CreateNoteClient.tsx і відобрази його на цій сторінці ».
 /**Файл page.tsx (Батько): Це «зовнішня оболонка». Вона відповідає за те, що бачать пошукові системи (SEO/Metadata).
 
 Файл CreateNoteClient.tsx (Дитина): Це «начинка». Вона відповідає за те, як працює форма, кнопки та навігація. */

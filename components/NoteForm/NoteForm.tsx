@@ -7,6 +7,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createNote, type CreateNoteData } from "../../lib/api";
 // import * as Yup from "yup";
 import { useRouter } from "next/navigation";
+import { useNoteDraftStore } from "../../lib/store/noteStore";
 
 interface NoteFormProps {
   onClose: () => void;
@@ -22,13 +23,25 @@ interface NoteFormProps {
 const NoteForm = ({ onClose }: NoteFormProps) => {
   const queryClient = useQueryClient();
   const router = useRouter(); // Залишаємо для редиректу після успіху
+  const { draft, setDraft, clearDraft } = useNoteDraftStore();
+
+  const handleChange = (
+    event: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
+    // 4. Коли користувач змінює будь-яке поле форми — оновлюємо стан
+    setDraft({
+      ...draft,
+      [event.target.name]: event.target.value,
+    });
+  };
 
   const { mutate, isPending } = useMutation({
     mutationFn: createNote,
     onSuccess: () => {
-      // 1. Оновлюємо кеш TanStack Query
+      clearDraft();
       queryClient.invalidateQueries({ queryKey: ["notes"] });
-      // 2. ПЕРЕНАПРАВЛЯЄМО на головну (замість неіснуючого onPageChange)
       router.push("/notes/filter/all");
     },
   });
@@ -78,6 +91,8 @@ const NoteForm = ({ onClose }: NoteFormProps) => {
         <input
           id={`${fieldId}-title`}
           name="title"
+          defaultValue={draft?.title}
+          onChange={handleChange}
           type="text"
           required // Аналог .required() у Yup
           minLength={3} // Аналог .min(3) у Yup
@@ -93,6 +108,8 @@ const NoteForm = ({ onClose }: NoteFormProps) => {
           // as="textarea"
           id={`${fieldId}-content`}
           name="content"
+          defaultValue={draft?.content}
+          onChange={handleChange}
           rows={8}
           className={css.textarea}
         />
@@ -106,6 +123,8 @@ const NoteForm = ({ onClose }: NoteFormProps) => {
           required // Аналог .required() у Yup
           id={`${fieldId}-tag`}
           name="tag"
+          defaultValue={draft?.tag}
+          onChange={handleChange}
           className={css.select}
         >
           <option value="Todo">Todo</option>
