@@ -7,12 +7,13 @@ import { useDebouncedCallback } from "use-debounce";
 import { fetchNotes, NoteData } from "@/lib/api";
 
 import NoteList from "../../../../components/NoteList/NoteList";
-// import Loader from "../../components/Loader/Loader";
-// import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
+// *import Loader from "../../components/Loader/Loader";
+// *import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import Pagination from "../../../../components/Pagination/Pagination";
-import Modal from "../../../../components/Modal/Modal";
 import SearchBox from "../../../../components/SearchBox/SearchBox";
-import NoteForm from "@/components/NoteForm/NoteForm";
+// import Modal from "../../../../components/Modal/Modal";
+// import NoteForm from "@/components/NoteForm/NoteForm";
+import Link from "next/link";
 
 interface NotesClientProps {
   initialTag?: string;
@@ -20,7 +21,7 @@ interface NotesClientProps {
 
 export default function NotesClient({ initialTag }: NotesClientProps) {
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  // const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [search, setSearch] = useState<string>("");
 
   const { data, isLoading } = useQuery<NoteData>({
@@ -51,13 +52,17 @@ export default function NotesClient({ initialTag }: NotesClientProps) {
             onPageChange={setCurrentPage}
           />
         )}
-        <button onClick={() => setIsModalOpen(true)} className={styles.button}>
+        {/* Внесіть зміну у клієнтський компонент сторінки NotesClient, тепер нам в ньому не потрібна логіка з модалкою. Кнопка Create note + тепер має бути посиланням, яке веде на маршрут /notes/action/create. */}
+        {/* <button onClick={() => setIsModalOpen(true)} className={styles.button}>
           Create note +
-        </button>
+        </button> */}
+        <Link href="/notes/action/create" className={styles.button}>
+          Create note +
+        </Link>
       </header>
 
-      {/* {isLoading && <Loader />}
-      {isError && <ErrorMessage />} */}
+      {/*//* {isLoading && <Loader />}
+      { //*isError && <ErrorMessage />}  */}
 
       {notes.length > 0 ? (
         <NoteList notes={notes} />
@@ -65,15 +70,14 @@ export default function NotesClient({ initialTag }: NotesClientProps) {
         !isLoading && <p>Заметки не найдены.</p>
       )}
 
-      {isModalOpen && (
+      {/* {isModalOpen && (
         <Modal onClose={() => setIsModalOpen(false)}>
-          {/* // onPageChange={setCurrentPage} */}
           <NoteForm
             onClose={() => setIsModalOpen(false)}
             onPageChange={setCurrentPage}
           />
         </Modal>
-      )}
+      )} */}
     </div>
   );
 }
